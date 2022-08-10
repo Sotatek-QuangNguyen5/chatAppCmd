@@ -265,7 +265,7 @@ func showListUser(mess Message) {
 		fmt.Println(clients[index], index, mess.Client.userId)
 		if clients[index].userId != mess.Client.userId {
 
-			mgs = mgs + fmt.Sprintf("UserName : %s, UserId : %d\t\t\t", clients[index].userName, clients[index].userId)
+			mgs = mgs + fmt.Sprintf("UserName : %s, UserId : %d\t\t", clients[index].userName, clients[index].userId)
 			//mess.Client.con.Write([]byte(mgs))
 		}
 	}
@@ -280,7 +280,7 @@ func showListRoom(mess Message) {
 
 		if room.room_id != mess.room_id {
 
-			mgs = fmt.Sprintf("RoomId %s, IsPrivate :%t\t\t\t", room.room_id, room.isPrivate)
+			mgs = fmt.Sprintf("RoomId %s, IsPrivate :%t\t\t", room.room_id, room.isPrivate)
 			//mess.Client.con.Write([]byte(mgs))
 		}
 	}
@@ -328,7 +328,7 @@ func chatWith(mess Message) {
 	index := findClient(user_id, clients)
 	if index < 0 {
 
-		mess.Client.con.Write([]byte("UserID is invalid!!!\n"))
+		mess.Client.con.Write([]byte("User is not survive!!!\n"))
 		return
 	}
 	if isFree(clients[index]) {
@@ -450,7 +450,7 @@ func main() {
 		case conn := <-clientCh:
 			go onMessage(conn)
 		case mgs := <-mgsCh:
-			go send(mgs)
+			send(mgs)
 		case client := <-closeClient:
 			deleteClient(client)
 
