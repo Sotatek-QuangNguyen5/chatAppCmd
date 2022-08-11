@@ -18,12 +18,14 @@ type Client struct {
 }
 
 type Room struct {
+
 	room_id   string
 	isPrivate bool
 	conns     []Client
 }
 
 type Message struct {
+
 	mgs       string
 	isCommand bool
 	command   string
@@ -191,7 +193,7 @@ func leaveRoom(client Client, room_id string) {
 
 func exitRoom(mess Message) {
 
-	if mess.mgs == "" {
+	if mess.room_id == "" {
 
 		mess.Client.con.Write([]byte("You are not in any room!!!\n"))
 		return
@@ -409,14 +411,26 @@ func deleteClient(client Client) {
 	}
 	for i := range rooms {
 
-		for j, cl := range rooms[i].conns {
+		index := findRoomIndex(rooms[i].room_id, rooms)
+		if index < 0 {
 
-			if cl.userId == client.userId {
-
-				rooms[i].conns = append(rooms[i].conns[:j], rooms[i].conns[j+1:]...)
-				break
-			}
+			continue
 		}
+		leaveRoom(client, rooms[i].room_id)
+		for _, cl := range rooms[i].conns {
+
+			mgs := fmt.Sprintf("%s left the room :((\n", client.userName)
+			cl.con.Write([]byte(mgs))
+		}
+
+		// for j, cl := range rooms[i].conns {
+
+		// 	if cl.userId == client.userId {
+
+		// 		rooms[i].conns = append(rooms[i].conns[:j], rooms[i].conns[j+1:]...)
+		// 		break
+		// 	}
+		// }
 	}
 }
 
@@ -452,8 +466,8 @@ func main() {
 		case mgs := <-mgsCh:
 			send(mgs)
 		case client := <-closeClient:
-			deleteClient(client)
 
+			deleteClient(client)
 		}
 	}
 
