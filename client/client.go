@@ -33,6 +33,15 @@ func receiverMess(conn net.Conn) {
 					room_id = strings.TrimSpace(infos[1])
 				}
 			}
+			infos = strings.Split(messages[0] ,":")
+			if len(infos) == 2 {
+
+				m1 := strings.TrimSpace(infos[1])
+				if m1 == "exit oke" {
+
+					room_id = ""
+				}
+			}
 		}
 		fmt.Print(mgs)
 	}

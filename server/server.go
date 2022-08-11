@@ -198,17 +198,18 @@ func exitRoom(mess Message) {
 		mess.Client.con.Write([]byte("You are not in any room!!!\n"))
 		return
 	}
-	leaveRoom(mess.Client, mess.room_id)
 	index := findRoomIndex(mess.room_id, rooms)
 	if index < 0 {
 
 		return
 	}
+	leaveRoom(mess.Client, mess.room_id)
 	for _, cl := range rooms[index].conns {
 
 		mgs := fmt.Sprintf("%s left the room :((\n", mess.Client.userName)
 		cl.con.Write([]byte(mgs))
 	}
+	mess.Client.con.Write([]byte("message : exit oke, roomID : " + mess.room_id + "\n"))
 }
 
 func joinRoom(mess Message) {
@@ -369,6 +370,11 @@ func send(mess Message) {
 
 		index := findRoomIndex(mess.room_id, rooms)
 		if index < 0 {
+
+			return
+		}
+		indexClient := findClient(mess.Client.userId, rooms[index].conns)
+		if indexClient < 0 {
 
 			return
 		}
